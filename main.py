@@ -17,17 +17,17 @@ except Exception as e:
     print(f"❌ Error loading model: {e}")
 
 class PredictRequest(BaseModel):
-    stress_level: int
-    mood_swings: int
-    coping_struggles: int
-    habit_changes: int
-    work_interest: int
-    social_withdrawal: int
-    days_indoors: int
-    mental_health_history: int
-    interview_comfort: int
-    care_access: int
-    family_history: int
+    stress_level: float
+    mood_swings: float
+    coping_struggles: float
+    habit_changes: float
+    work_interest: float
+    social_withdrawal: float
+    days_indoors: float
+    mental_health_history: float
+    interview_comfort: float
+    care_access: float
+    family_history: float
 
 @app.get("/health")
 def health():
