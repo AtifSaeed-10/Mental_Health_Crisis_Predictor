@@ -3,6 +3,7 @@ from pydantic import BaseModel
 import joblib
 import warnings
 import numpy as np
+import os
 
 warnings.filterwarnings('ignore')
 
@@ -10,12 +11,16 @@ app = FastAPI(title="Mental Health Crisis Predictor API")
 
 # Load model
 try:
-    model = joblib.load("/app/mental_health_model.pkl")
-    scaler = joblib.load("/app/scaler.pkl")
+    model_path = os.path.join(os.path.dirname(__file__), "mental_health_model.pkl")
+    scaler_path = os.path.join(os.path.dirname(__file__), "scaler.pkl")
+    
+    model = joblib.load(model_path)
+    scaler = joblib.load(scaler_path)
     print("✅ Model loaded successfully")
 except Exception as e:
     print(f"❌ Error loading model: {e}")
     model = None
+    scaler = None
 
 class PredictRequest(BaseModel):
     stress_level: float
@@ -32,6 +37,8 @@ class PredictRequest(BaseModel):
 
 @app.get("/health")
 def health():
+    if model is None:
+        return {"status": "error", "message": "Model not loaded"}
     return {"status": "ok"}
 
 @app.get("/")
