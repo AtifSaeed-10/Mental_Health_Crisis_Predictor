@@ -10,11 +10,12 @@ app = FastAPI(title="Mental Health Crisis Predictor API")
 
 # Load model
 try:
-    model = joblib.load("mental_health_model.pkl")
-    scaler = joblib.load("scaler.pkl")
+    model = joblib.load("/app/mental_health_model.pkl")
+    scaler = joblib.load("/app/scaler.pkl")
     print("✅ Model loaded successfully")
 except Exception as e:
     print(f"❌ Error loading model: {e}")
+    model = None
 
 class PredictRequest(BaseModel):
     stress_level: float
@@ -39,6 +40,9 @@ def root():
 
 @app.post("/predict")
 def predict(request: PredictRequest):
+    if model is None:
+        return {"error": "Model not loaded", "type": "ModelError"}
+    
     try:
         # Feature engineering - same as training notebook
         stress_score = (request.stress_level + request.mood_swings + request.coping_struggles) / 3
