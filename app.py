@@ -16,7 +16,6 @@ API_URL = (
 
 REQUEST_TIMEOUT = 20
 
-# ── STYLES ──────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap');
@@ -37,7 +36,6 @@ st.markdown("""
 #MainMenu, footer, header { visibility: hidden; }
 .block-container { padding-top: 1rem; padding-bottom: 3rem; max-width: 820px; }
 
-/* ── HERO ── */
 .hero { text-align: center; padding: 2rem 0 1.5rem; }
 .hero-icon { font-size: 3.8rem; display: block; margin-bottom: 0.5rem; }
 .hero h1 {
@@ -48,7 +46,6 @@ st.markdown("""
 }
 .hero-sub { color: var(--muted); font-size: 0.9rem; margin-top: 0.5rem; font-family: 'DM Mono', monospace; }
 
-/* ── SECTION LABEL ── */
 .section-label {
     font-family: 'DM Mono', monospace;
     font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase;
@@ -56,7 +53,6 @@ st.markdown("""
     border-left: 3px solid var(--accent); padding-left: 0.6rem;
 }
 
-/* ── RESULT BOX ── */
 .result-box {
     border-radius: 14px; padding: 1.4rem 1.2rem;
     margin-top: 1.2rem; text-align: center;
@@ -71,14 +67,12 @@ st.markdown("""
 .result-conf { font-family: 'DM Mono', monospace; font-size: 0.85rem; color: var(--muted); }
 .result-desc { color: #c2c9e0; font-size: 0.92rem; margin-top: 0.4rem; }
 
-/* ── DISCLAIMER ── */
 .disclaimer {
     background: rgba(255,180,0,0.06); border: 1px solid rgba(255,180,0,0.22);
     border-radius: 10px; padding: 0.8rem 1rem; margin-top: 1rem;
     font-size: 0.78rem; color: #c8a96e; line-height: 1.5;
 }
 
-/* ── BUTTON ── */
 div[data-testid="stButton"] > button {
     width: 100% !important;
     background: linear-gradient(135deg, #6ee7f7 0%, #a78bfa 100%) !important;
@@ -86,19 +80,10 @@ div[data-testid="stButton"] > button {
     font-weight: 800 !important; padding: 0.85rem 1.5rem !important;
     border: none !important; border-radius: 12px !important;
     margin-top: 1rem !important; letter-spacing: 0.03em !important;
-    transition: opacity 0.2s !important;
 }
-div[data-testid="stButton"] > button:hover { opacity: 0.88 !important; }
-
-/* ── SLIDER LABELS ── */
-label[data-testid="stWidgetLabel"] p { color: var(--text) !important; font-size: 0.88rem !important; }
-
-/* ── SELECT BOX ── */
-div[data-baseweb="select"] { background: var(--card) !important; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── HERO ────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
     <span class="hero-icon">🧠</span>
@@ -107,9 +92,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ── FORM ────────────────────────────────────────────────────────────────────
-
-# Helper maps
 YESNO        = {"Yes": 1, "No": 0}
 YESNO_MAYBE  = {"Yes": 1, "Maybe": 0.5, "No": 0}
 GENDER_MAP   = {"Female": 0, "Male": 1}
@@ -119,7 +101,6 @@ DAYS_MAP     = {"Go out every day": 0, "1-14 days": 1, "15-30 days": 2,
 MOOD_MAP     = {"Low": 0, "Medium": 1, "High": 2}
 CARE_MAP     = {"No": 0, "Not sure": 0.5, "Yes": 1}
 
-# ── Section 1: About You
 st.markdown('<div class="section-label">01 · About You</div>', unsafe_allow_html=True)
 col1, col2 = st.columns(2)
 with col1:
@@ -129,7 +110,6 @@ with col2:
     self_employed   = st.selectbox("Self-Employed?", list(YESNO.keys()))
     family_history  = st.selectbox("Family history of mental illness?", list(YESNO.keys()))
 
-# ── Section 2: Stress & Mood
 st.markdown('<div class="section-label">02 · Stress & Mood</div>', unsafe_allow_html=True)
 col3, col4 = st.columns(2)
 with col3:
@@ -139,27 +119,23 @@ with col4:
     coping_struggles  = st.selectbox("Struggling to cope?", list(YESNO.keys()))
     changes_habits    = st.selectbox("Changes in habits?", list(YESNO_MAYBE.keys()))
 
-# ── Section 3: Behaviour
 st.markdown('<div class="section-label">03 · Behaviour & Social Life</div>', unsafe_allow_html=True)
 col5, col6 = st.columns(2)
 with col5:
     work_interest     = st.selectbox("Lost interest in work?", list(YESNO_MAYBE.keys()))
-    social_weakness   = st.selectbox("Feeling socially weak/withdrawn?", list(YESNO_MAYBE.keys()))
+    social_weakness   = st.selectbox("Feeling socially withdrawn?", list(YESNO_MAYBE.keys()))
 with col6:
     days_indoors      = st.selectbox("Days spent indoors (last month)?", list(DAYS_MAP.keys()))
 
-# ── Section 4: Awareness
 st.markdown('<div class="section-label">04 · Awareness & Support</div>', unsafe_allow_html=True)
 col7, col8 = st.columns(2)
 with col7:
-    mh_history        = st.selectbox("Have you had mental health issues before?", list(YESNO_MAYBE.keys()))
-    mh_interview      = st.selectbox("Comfortable discussing MH in job interviews?", list(YESNO_MAYBE.keys()))
+    mh_history        = st.selectbox("Mental health issues before?", list(YESNO_MAYBE.keys()))
+    mh_interview      = st.selectbox("Comfortable discussing MH in interviews?", list(YESNO_MAYBE.keys()))
 with col8:
-    care_options      = st.selectbox("Do you have access to care/treatment?", list(CARE_MAP.keys()))
+    care_options      = st.selectbox("Access to care/treatment?", list(CARE_MAP.keys()))
 
-# ── PREDICT BUTTON ──────────────────────────────────────────────────────────
 if st.button("⚡  Predict Now"):
-    # Build numeric feature dict (must match main.py exactly)
     payload = {
         "Gender":                  GENDER_MAP[gender],
         "Occupation":              OCC_MAP[occupation],
@@ -195,7 +171,7 @@ if st.button("⚡  Predict Now"):
                 <div class="result-box result-bad">
                     <div class="result-title">🔴 Treatment Recommended</div>
                     <div class="result-conf">{conf_txt}</div>
-                    <p class="result-desc">{explanation or "Based on your answers, seeking professional support is advised."}</p>
+                    <p class="result-desc">{explanation}</p>
                 </div>
                 """, unsafe_allow_html=True)
             else:
@@ -204,31 +180,29 @@ if st.button("⚡  Predict Now"):
                 <div class="result-box result-ok">
                     <div class="result-title">🟢 Lower Immediate Risk</div>
                     <div class="result-conf">{conf_txt}</div>
-                    <p class="result-desc">{explanation or "Your responses suggest a lower risk profile right now."}</p>
+                    <p class="result-desc">{explanation}</p>
                 </div>
                 """, unsafe_allow_html=True)
 
             st.markdown("""
             <div class="disclaimer">
-                ⚠️ <strong>Disclaimer:</strong> This is for educational & awareness purposes only.
-                It is <strong>not a medical diagnosis</strong>. Please consult a qualified mental health
-                professional if you have concerns.
+                ⚠️ <strong>Disclaimer:</strong> This is for educational purposes only.
+                Not a medical diagnosis. Please consult a professional if needed.
             </div>
             """, unsafe_allow_html=True)
 
         except requests.exceptions.Timeout:
-            st.error("⏱️ Request timed out. Railway might be waking up — try again in 10 seconds.")
+            st.error("⏱️ Timeout. Railway might be waking up — try again in 10 seconds.")
         except requests.exceptions.ConnectionError:
-            st.error("🌐 Can't reach the API. Check the URL in your Streamlit secrets.")
+            st.error("🌐 Can't reach the API. Check your Streamlit secrets.")
         except requests.exceptions.HTTPError as e:
             try:
-                detail = response.json().get("detail", "")
+                detail = response.json()
             except Exception:
                 detail = ""
             st.error(f"❌ API error {response.status_code}: {e}\n{detail}")
         except Exception as e:
             st.error(f"❌ Unexpected error: {str(e)}")
 
-# Debug expander at the bottom
 with st.expander("🔧 Debug info"):
     st.code(f"API_URL = {API_URL}", language="text")
