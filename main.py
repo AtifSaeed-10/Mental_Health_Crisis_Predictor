@@ -3,7 +3,6 @@ from pydantic import BaseModel
 import joblib
 import warnings
 import numpy as np
-import os
 
 warnings.filterwarnings('ignore')
 
@@ -11,11 +10,8 @@ app = FastAPI(title="Mental Health Crisis Predictor API")
 
 # Load model
 try:
-    model_path = os.path.join(os.path.dirname(__file__), "mental_health_model.pkl")
-    scaler_path = os.path.join(os.path.dirname(__file__), "scaler.pkl")
-    
-    model = joblib.load(model_path)
-    scaler = joblib.load(scaler_path)
+    model = joblib.load("mental_health_model.pkl")
+    scaler = joblib.load("scaler.pkl")
     print("✅ Model loaded successfully")
 except Exception as e:
     print(f"❌ Error loading model: {e}")
@@ -37,8 +33,6 @@ class PredictRequest(BaseModel):
 
 @app.get("/health")
 def health():
-    if model is None:
-        return {"status": "error", "message": "Model not loaded"}
     return {"status": "ok"}
 
 @app.get("/")
@@ -48,16 +42,14 @@ def root():
 @app.post("/predict")
 def predict(request: PredictRequest):
     if model is None:
-        return {"error": "Model not loaded", "type": "ModelError"}
+        return {"error": "Model not loaded"}
     
     try:
-        # Feature engineering - same as training notebook
         stress_score = (request.stress_level + request.mood_swings + request.coping_struggles) / 3
         behavioral_score = (request.habit_changes + (1 - request.work_interest) + request.social_withdrawal + (request.days_indoors / 30)) / 4
         awareness_score = (request.mental_health_history + request.interview_comfort + (1 - request.care_access)) / 3
         high_risk_flag = 1 if (stress_score > 0.6 and behavioral_score > 0.6 and awareness_score > 0.6 and request.family_history == 1) else 0
         
-        # Create 22 features
         features = np.array([
             request.stress_level,
             request.mood_swings,
@@ -92,7 +84,7 @@ def predict(request: PredictRequest):
             "explanation": "Mental health treatment likely needed" if prediction == 1 else "Low risk"
         }
     except Exception as e:
-        return {"error": str(e), "type": type(e).__name__}
+        return {"error": str(e)}
 
 if __name__ == "__main__":
     import uvicorn
