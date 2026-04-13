@@ -1,72 +1,165 @@
 # 🧠 Mental Health Crisis Predictor
 
-A machine learning project that predicts whether a person is likely to seek mental health treatment based on personal, behavioral, and workplace-related factors.
+A production-style machine learning system that predicts whether a person is likely to seek mental health treatment based on behavioral, emotional, and workplace-related factors.
 
-🔗 **[Try the Live App](https://kgzcuuxfdexrmku9duunoq.streamlit.app/)**
+🔗 **[Try the Live UI (Streamlit)](https://kgzcuuxfdexrmku9duunoq.streamlit.app/)**
+---
+
+## 🚀 System Overview
+
+This project has been upgraded from a simple ML app to a **full-stack AI system**:
+
+* **Frontend (Streamlit)** → User interface for input & visualization
+* **Backend (FastAPI)** → Handles requests and serves predictions
+* **Deployment (Railway)** → Hosts the API for public access
+
+### 🔁 Architecture
+
+User → Streamlit UI → FastAPI API → ML Model → JSON Response
 
 ---
 
-## What It Does
+## 📌 What It Does
 
-You fill out a short form covering things like stress levels, mood changes, work habits, and family history — and the model tells you whether treatment is likely recommended or not.
+Users fill out a short form covering:
 
-It's not a diagnosis. It's a pattern-based prediction meant to raise awareness and encourage people to take their mental health seriously.
+* stress levels
+* mood changes
+* behavioral patterns
+* work environment
+* mental health history
 
----
+The system returns a prediction indicating whether **mental health treatment is likely recommended**.
 
-## How It Works
-
-The model was trained on a mental health survey dataset. Here's a quick breakdown of the pipeline:
-
-1. **Data Cleaning** — Handled missing values (self-employment field filled by mode), removed duplicates, dropped irrelevant columns like timestamp and country.
-
-2. **Feature Engineering** — Raw survey answers were mapped to numbers, then grouped into three composite scores:
-   - **Stress Score** — growing stress + mood swings + coping struggles
-   - **Behavioral Score** — habit changes + work interest + social withdrawal + days indoors
-   - **Awareness Score** — mental health history + interview comfort + care access
-
-   A **high-risk flag** is also computed when all three areas are elevated alongside family history.
-
-3. **Models Trained** — Five classifiers were compared:
-   - Logistic Regression
-   - Random Forest
-   - XGBoost
-   - KNN
-   - Gradient Boosting
-
-4. **Final Model** — A **Voting Classifier** (soft voting) combining Logistic Regression, XGBoost, and Gradient Boosting. This gave the best overall accuracy.
+> ⚠️ This is not a medical diagnosis — it is a pattern-based ML prediction designed for awareness.
 
 ---
 
-## Files
+## ⚙️ How It Works
 
-| File | Description |
-|------|-------------|
-| `MentalHealthCrisis.ipynb` | Full training notebook with EDA, feature engineering, and model comparison |
-| `mental_health_model.pkl` | Saved voting classifier |
-| `scaler.pkl` | StandardScaler used for Logistic Regression inputs |
-| `app.py` | Streamlit frontend for the live prediction app |
+### 1. Data Preprocessing
 
----
+* Missing values handled (e.g., self-employment field)
+* Duplicates removed
+* Irrelevant columns dropped (timestamp, country)
 
-## Tech Stack
+### 2. Feature Engineering
 
-- Python
-- pandas, numpy
-- scikit-learn
-- XGBoost
-- Streamlit
-- joblib
+Raw survey responses were transformed into structured signals:
+
+* **Stress Score** → stress + mood swings + coping ability
+* **Behavioral Score** → habits + work interest + social activity
+* **Awareness Score** → history + openness + care access
+
+A **high-risk flag** is triggered when all dimensions are elevated along with family history.
 
 ---
 
+### 3. Model Training
 
-## Dataset
+Multiple models were evaluated:
 
-The model was trained on a publicly available mental health survey dataset covering demographic info, workplace environment, stress indicators, and treatment history.
+* Logistic Regression
+* Random Forest
+* XGBoost
+* KNN
+* Gradient Boosting
 
 ---
 
-## Disclaimer
+### 4. Final Model
 
-This tool is for informational and educational purposes only. It is not a substitute for professional mental health advice, diagnosis, or treatment.
+A **Voting Classifier (Soft Voting)** combining:
+
+* Logistic Regression
+* XGBoost
+* Gradient Boosting
+
+Selected based on best overall performance.
+
+---
+
+## 🧠 API (FastAPI Backend)
+
+The model is exposed as a REST API.
+
+### 🔹 Endpoint: `/predict`
+
+* **Method:** POST
+* **Input:**
+
+```json
+{
+  "text": "I feel stressed and isolated"
+}
+```
+
+* **Response:**
+
+```json
+{
+  "prediction": "likely_needs_treatment"
+}
+```
+
+---
+
+### 🔹 Endpoint: `/health`
+
+* **Method:** GET
+* **Purpose:** Check if API is running
+
+---
+
+### 🛠 Tech Details
+
+* FastAPI (ASGI framework)
+* Uvicorn (server)
+* Pydantic (input validation)
+* JSON-based request/response
+
+---
+
+## 📂 Project Structure
+
+| File                       | Description                                            |
+| -------------------------- | ------------------------------------------------------ |
+| `MentalHealthCrisis.ipynb` | Training pipeline (EDA + feature engineering + models) |
+| `mental_health_model.pkl`  | Saved voting classifier                                |
+| `scaler.pkl`               | Feature scaling object                                 |
+| `app.py`                   | Streamlit frontend                                     |
+| `main.py`                  | FastAPI backend                                        |
+
+---
+
+## 🧰 Tech Stack
+
+* Python
+* pandas, numpy
+* scikit-learn
+* XGBoost
+* FastAPI
+* Streamlit
+* Uvicorn
+* Railway
+* joblib
+
+---
+
+## 🌍 Deployment
+
+* **Frontend:** Streamlit Cloud
+* **Backend:** Railway (FastAPI API)
+
+---
+
+## ⚠️ Disclaimer
+
+This tool is for educational and awareness purposes only.
+It does not provide medical advice, diagnosis, or treatment.
+
+---
+
+## 💡 Key Insight
+
+> This project demonstrates how a machine learning model can be transformed into a **deployable, API-driven product** rather than just a local experiment.
