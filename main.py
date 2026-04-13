@@ -4,6 +4,7 @@ import joblib
 import warnings
 import numpy as np
 import traceback
+import sys
 
 warnings.filterwarnings('ignore')
 
@@ -12,17 +13,20 @@ app = FastAPI(title="Mental Health Crisis Predictor API")
 model = None
 scaler = None
 
+print("Script started", file=sys.stderr)
+
 # Load model at startup
 @app.on_event("startup")
 async def load_model():
     global model, scaler
     try:
+        print("Loading model...", file=sys.stderr)
         model = joblib.load("mental_health_model.pkl")
         scaler = joblib.load("scaler.pkl")
-        print("✅ Model loaded successfully")
+        print("✅ Model loaded successfully", file=sys.stderr)
     except Exception as e:
-        print(f"❌ Error loading model: {e}")
-        traceback.print_exc()
+        print(f"❌ Error loading model: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
         model = None
         scaler = None
 
@@ -41,7 +45,13 @@ class PredictRequest(BaseModel):
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "model_loaded": model is not None}
+    try:
+        print("Health check called", file=sys.stderr)
+        return {"status": "ok", "model_loaded": model is not None}
+    except Exception as e:
+        print(f"Error in health: {e}", file=sys.stderr)
+        traceback.print_exc(file=sys.stderr)
+        return {"status": "error", "error": str(e)}
 
 @app.get("/")
 def root():
@@ -50,7 +60,7 @@ def root():
 @app.post("/predict")
 def predict(request: PredictRequest):
     if model is None:
-        return {"error": "Model not loaded", "status": "error"}
+        return {"error": "Model not loaded"}
     
     try:
         stress_score = (request.stress_level + request.mood_swings + request.coping_struggles) / 3
@@ -92,8 +102,8 @@ def predict(request: PredictRequest):
             "explanation": "Mental health treatment likely needed" if prediction == 1 else "Low risk"
         }
     except Exception as e:
-        traceback.print_exc()
-        return {"error": str(e), "status": "error"}
+        traceback.print_exc(file=sys.stderr)
+        return {"error": str(e)}
 
 if __name__ == "__main__":
     import uvicorn
