@@ -1,6 +1,2 @@
-streamlit
-scikit-learn
-xgboost
-joblib
-numpy
-pandas
+streamlit==1.44.1
+requests==2.32.3
