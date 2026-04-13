@@ -3,20 +3,28 @@ from pydantic import BaseModel
 import joblib
 import warnings
 import numpy as np
+import traceback
 
 warnings.filterwarnings('ignore')
 
 app = FastAPI(title="Mental Health Crisis Predictor API")
 
-# Load model
-try:
-    model = joblib.load("mental_health_model.pkl")
-    scaler = joblib.load("scaler.pkl")
-    print("✅ Model loaded successfully")
-except Exception as e:
-    print(f"❌ Error loading model: {e}")
-    model = None
-    scaler = None
+model = None
+scaler = None
+
+# Load model at startup
+@app.on_event("startup")
+async def load_model():
+    global model, scaler
+    try:
+        model = joblib.load("mental_health_model.pkl")
+        scaler = joblib.load("scaler.pkl")
+        print("✅ Model loaded successfully")
+    except Exception as e:
+        print(f"❌ Error loading model: {e}")
+        traceback.print_exc()
+        model = None
+        scaler = None
 
 class PredictRequest(BaseModel):
     stress_level: float
@@ -33,7 +41,7 @@ class PredictRequest(BaseModel):
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "model_loaded": model is not None}
 
 @app.get("/")
 def root():
@@ -42,7 +50,7 @@ def root():
 @app.post("/predict")
 def predict(request: PredictRequest):
     if model is None:
-        return {"error": "Model not loaded"}
+        return {"error": "Model not loaded", "status": "error"}
     
     try:
         stress_score = (request.stress_level + request.mood_swings + request.coping_struggles) / 3
@@ -84,7 +92,8 @@ def predict(request: PredictRequest):
             "explanation": "Mental health treatment likely needed" if prediction == 1 else "Low risk"
         }
     except Exception as e:
-        return {"error": str(e)}
+        traceback.print_exc()
+        return {"error": str(e), "status": "error"}
 
 if __name__ == "__main__":
     import uvicorn
