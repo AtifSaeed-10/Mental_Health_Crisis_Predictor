@@ -4,12 +4,12 @@ import requests
 
 st.set_page_config(
     page_title="Mental Health Crisis Predictor",
-    page_icon="🧠",
+    page_icon="����",
     layout="centered"
 )
 
 # --- CONFIG ---
-# Best practice: use Streamlit secrets first, then env var, then fallback URL
+# Priority: Streamlit secrets -> environment variable -> fallback URL
 API_URL = (
     st.secrets.get("API_URL", None)
     if hasattr(st, "secrets")
@@ -17,7 +17,6 @@ API_URL = (
 ) or os.getenv("API_URL") or "https://mentalhealthcrisispredictor-production.up.railway.app/predict"
 
 REQUEST_TIMEOUT = 20  # seconds
-
 
 # --- STYLES ---
 st.markdown("""
@@ -103,6 +102,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# --- INPUT ---
 st.markdown("### ✍️ Enter your text")
 user_input = st.text_area(
     "Describe how you feel:",
@@ -110,9 +110,11 @@ user_input = st.text_area(
     placeholder="e.g., I feel anxious, stressed, and unable to cope..."
 )
 
-with st.expander("API settings (debug)"):
+# Optional debug visibility
+with st.expander("API settings"):
     st.code(API_URL, language="text")
 
+# --- PREDICT ---
 if st.button("⚡ Analyze My Text"):
     if not user_input.strip():
         st.warning("Please enter some text first.")
@@ -159,7 +161,6 @@ if st.button("⚡ Analyze My Text"):
             except requests.exceptions.ConnectionError:
                 st.error("🌐 Connection failed. Check API URL or network.")
             except requests.exceptions.HTTPError as e:
-                # Try to show backend error message if available
                 backend_msg = ""
                 try:
                     backend_msg = response.json().get("detail", "")
