@@ -1,0 +1,55 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="_dwIZfe4H_6Mg-nSIofS">
+    <mxGraphModel dx="1005" dy="451" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="light-dark(#FFFFFF,#FF9933)" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-3" edge="1" parent="1" source="u4b9-Q5GRAQXRGhuxcg4-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;flowAnimation=1;shadow=0;sketch=1;curveFitting=1;jiggle=2;" target="u4b9-Q5GRAQXRGhuxcg4-2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontStyle=1;sketch=1;curveFitting=1;jiggle=2;" value="GitHub Repo (code)" vertex="1">
+          <mxGeometry height="50" width="120" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-5" edge="1" parent="1" source="u4b9-Q5GRAQXRGhuxcg4-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" target="u4b9-Q5GRAQXRGhuxcg4-4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-2" parent="1" style="whiteSpace=wrap;html=1;rounded=0;arcSize=8;sketch=1;curveFitting=1;jiggle=2;" value="&lt;b&gt;RAILWAY DEPLOYMENT&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="120" x="180" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-11" edge="1" parent="1" source="u4b9-Q5GRAQXRGhuxcg4-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" target="u4b9-Q5GRAQXRGhuxcg4-9" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-4" parent="1" style="whiteSpace=wrap;html=1;rounded=0;arcSize=8;sketch=1;curveFitting=1;jiggle=2;" value="&lt;b&gt;&lt;i&gt;FAST API SERVER&lt;/i&gt;&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="120" x="340" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=11;labelBorderColor=none;labelBackgroundColor=none;textShadow=0;glass=0;shadow=0;sketch=1;curveFitting=1;jiggle=2;align=center;fontColor=light-dark(#000000,#FFFFFF);fontStyle=1;verticalAlign=middle;" value="&lt;i&gt;&lt;font style=&quot;&quot;&gt;USER( Browser/Mobile)&lt;/font&gt;&lt;/i&gt;" vertex="1">
+          <mxGeometry height="70" width="140" x="320" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-16" edge="1" parent="1" source="u4b9-Q5GRAQXRGhuxcg4-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;" target="u4b9-Q5GRAQXRGhuxcg4-13" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-9" parent="1" style="whiteSpace=wrap;html=1;rounded=0;arcSize=8;sketch=1;curveFitting=1;jiggle=2;" value="&lt;b&gt;Pydantic Validation&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="120" x="510" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-13" parent="1" style="whiteSpace=wrap;html=1;rounded=0;arcSize=8;sketch=1;curveFitting=1;jiggle=2;" value="&lt;b&gt;ML Model Classifier&lt;/b&gt;" vertex="1">
+          <mxGeometry height="80" width="120" x="690" y="205" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-15" edge="1" parent="1" source="u4b9-Q5GRAQXRGhuxcg4-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.42;entryY=0.016;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=2;" target="u4b9-Q5GRAQXRGhuxcg4-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-23" edge="1" parent="1" source="u4b9-Q5GRAQXRGhuxcg4-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontStyle=1;fontSize=14;" target="u4b9-Q5GRAQXRGhuxcg4-6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-17" parent="1" style="whiteSpace=wrap;html=1;rounded=0;arcSize=8;sketch=1;curveFitting=1;jiggle=2;" value="&lt;b&gt;Prediction Response&lt;/b&gt;" vertex="1">
+          <mxGeometry height="60" width="120" x="690" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="u4b9-Q5GRAQXRGhuxcg4-20" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;entryX=0.414;entryY=0.967;entryDx=0;entryDy=0;entryPerimeter=0;" target="u4b9-Q5GRAQXRGhuxcg4-17" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="740" y="200" as="sourcePoint" />
+            <mxPoint x="740" y="90" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
