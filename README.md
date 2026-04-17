@@ -4,7 +4,9 @@ A production-style machine learning system that predicts whether a person is lik
 
 🔗 **[Try the Live UI (Streamlit)](https://kgzcuuxfdexrmku9duunoq.streamlit.app/)**
 ---
+ ##  System Architecture
 
+![Architecture Diagram](ML Architecture API/archit.png)
 ## 🚀 System Overview
 
 This project has been upgraded from a simple ML app to a **full-stack AI system**:
