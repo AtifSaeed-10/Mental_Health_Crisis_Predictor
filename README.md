@@ -6,7 +6,7 @@ A production-style machine learning system that predicts whether a person is lik
 ---
 ##  System Architecture
 
-![Architecture Diagram](ML Architecture API.drawio.png)
+![Architecture Diagram](architecture.png)
 ## 🚀 System Overview
 
 This project has been upgraded from a simple ML app to a **full-stack AI system**:
