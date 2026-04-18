@@ -1,7 +1,7 @@
 import os
 import streamlit as st
 import requests
-from typing import Dict, Tuple
+import math
 
 st.set_page_config(
     page_title="MindVault · Mental Health Assessment",
@@ -10,7 +10,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ── API CONFIGURATION ────────────────────────────────────────────────────────
 API_URL = (
     st.secrets.get("API_URL", None)
     if hasattr(st, "secrets")
@@ -19,10 +18,10 @@ API_URL = (
 
 REQUEST_TIMEOUT = 20
 
-# ── PREMIUM CSS DESIGN ───────────────────────────────────────────────────────
+# ── CUTTING EDGE AESTHETIC CSS ──────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap');
 
 * {
     margin: 0;
@@ -31,11 +30,6 @@ st.markdown("""
 }
 
 :root {
-    --bg-primary: #fafbfc;
-    --bg-secondary: #f5f7fa;
-    --bg-tertiary: #eef2f7;
-    --surface-light: rgba(255, 255, 255, 0.8);
-    --surface-glass: rgba(255, 255, 255, 0.4);
     --text-primary: #0a0e27;
     --text-secondary: #6b7280;
     --text-tertiary: #9ca3af;
@@ -43,21 +37,208 @@ st.markdown("""
     --accent-secondary: #06b6d4;
     --accent-success: #10b981;
     --accent-danger: #ef4444;
-    --accent-warning: #f59e0b;
-    --border-light: rgba(0, 0, 0, 0.06);
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.1);
 }
 
 html, body, .stApp {
-    background: var(--bg-primary) !important;
+    background: #000000 !important;
     color: var(--text-primary);
     font-family: 'Sora', sans-serif;
+    overflow-x: hidden;
 }
 
-.stApp {
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* ANIMATED BACKGROUND - CUTTING EDGE */
+/* ──────────────────────────────────────────────────────────────────────────── */
+
+.animated-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    background: #0a0a0a;
+}
+
+/* Animated Gradient Mesh */
+.gradient-mesh {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(45deg, #1a1a2e 0%, #16213e 25%, #0f3460 50%, #1a1a2e 75%, #0a0e27 100%);
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Organic Blob Animations */
+.blob {
+    position: absolute;
+    border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+    filter: blur(100px);
+    opacity: 0.15;
+    animation: morphing 8s ease-in-out infinite;
+}
+
+.blob-1 {
+    width: 500px;
+    height: 500px;
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    top: -10%;
+    left: 10%;
+    animation: morphing 8s ease-in-out infinite, float-blob-1 20s ease-in-out infinite;
+}
+
+.blob-2 {
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(135deg, #06b6d4, #10b981);
+    top: 30%;
+    right: 5%;
+    animation: morphing 10s ease-in-out infinite reverse, float-blob-2 25s ease-in-out infinite;
+}
+
+.blob-3 {
+    width: 350px;
+    height: 350px;
+    background: linear-gradient(135deg, #10b981, #3b82f6);
+    bottom: 10%;
+    left: 50%;
+    animation: morphing 9s ease-in-out infinite, float-blob-3 22s ease-in-out infinite;
+}
+
+.blob-4 {
+    width: 300px;
+    height: 300px;
+    background: linear-gradient(135deg, #f59e0b, #06b6d4);
+    bottom: 20%;
+    right: 10%;
+    animation: morphing 7s ease-in-out infinite reverse, float-blob-4 18s ease-in-out infinite;
+}
+
+@keyframes morphing {
+    0%, 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+    50% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+}
+
+@keyframes float-blob-1 {
+    0%, 100% { transform: translate(0px, 0px) scale(1); }
+    50% { transform: translate(50px, -50px) scale(1.1); }
+}
+
+@keyframes float-blob-2 {
+    0%, 100% { transform: translate(0px, 0px) scale(1); }
+    50% { transform: translate(-60px, 40px) scale(1.08); }
+}
+
+@keyframes float-blob-3 {
+    0%, 100% { transform: translate(0px, 0px) scale(1); }
+    50% { transform: translate(40px, -40px) scale(1.05); }
+}
+
+@keyframes float-blob-4 {
+    0%, 100% { transform: translate(0px, 0px) scale(1); }
+    50% { transform: translate(-40px, -30px) scale(1.1); }
+}
+
+/* Animated Light Streaks */
+.light-streak {
+    position: absolute;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), transparent);
+    filter: blur(40px);
+    pointer-events: none;
+}
+
+.streak-1 {
+    width: 800px;
+    height: 2px;
+    top: 20%;
+    left: -400px;
+    animation: streak-move-1 8s ease-in-out infinite;
+}
+
+.streak-2 {
+    width: 600px;
+    height: 2px;
+    top: 50%;
+    right: -300px;
+    background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.3), transparent);
+    animation: streak-move-2 10s ease-in-out infinite reverse;
+}
+
+.streak-3 {
+    width: 700px;
+    height: 2px;
+    bottom: 30%;
+    left: -350px;
+    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.3), transparent);
+    animation: streak-move-3 9s ease-in-out infinite;
+}
+
+@keyframes streak-move-1 {
+    0%, 100% { transform: translateX(0px); }
+    50% { transform: translateX(400px); }
+}
+
+@keyframes streak-move-2 {
+    0%, 100% { transform: translateX(0px); }
+    50% { transform: translateX(-300px); }
+}
+
+@keyframes streak-move-3 {
+    0%, 100% { transform: translateX(0px); }
+    50% { transform: translateX(350px); }
+}
+
+/* Pulsing Aura */
+.aura {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(150px);
+    pointer-events: none;
+}
+
+.aura-1 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.2), transparent);
+    top: 15%;
+    left: 20%;
+    animation: pulse-aura 6s ease-in-out infinite;
+}
+
+.aura-2 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(6, 182, 212, 0.15), transparent);
+    bottom: 15%;
+    right: 15%;
+    animation: pulse-aura 7s ease-in-out infinite reverse;
+}
+
+@keyframes pulse-aura {
+    0%, 100% { transform: scale(0.8); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.6; }
+}
+
+/* Noise Texture Overlay */
+.noise-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: 
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' result='noise'/%3E%3C/filter%3E%3Crect width='400' height='400' fill='%23fff' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: 0.4;
+    animation: noise-drift 20s linear infinite;
+}
+
+@keyframes noise-drift {
+    0% { transform: translate(0px, 0px); }
+    100% { transform: translate(200px, 200px); }
 }
 
 #MainMenu { display: none !important; }
@@ -66,313 +247,80 @@ header { visibility: hidden !important; }
 [data-testid="stToolbar"] { display: none !important; }
 [data-testid="stDecoration"] { display: none !important; }
 
-/* ── ANIMATED BACKGROUND ─────────────────────────────────────────────────── */
-.animated-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
-    background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 50%, #f0f4f9 100%);
-}
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* MAIN CONTAINER - FLOWING LAYOUT */
+/* ──────────────────────────────────────────────────────────────────────────── */
 
-/* Neural Network Background */
-.neural-bg {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 70% 50%, rgba(6, 182, 212, 0.03) 0%, transparent 50%),
-                radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.02) 0%, transparent 50%);
-    animation: breathe 8s ease-in-out infinite;
-}
-
-@keyframes breathe {
-    0%, 100% { 
-        opacity: 0.4;
-        filter: blur(100px);
-    }
-    50% { 
-        opacity: 0.7;
-        filter: blur(80px);
-    }
-}
-
-/* Floating Healing Orbs */
-.floating-sphere {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.25;
-    animation: float 20s ease-in-out infinite;
-}
-
-.sphere-1 {
-    width: 400px;
-    height: 400px;
-    background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    top: -10%;
-    right: -5%;
-    animation: float 25s ease-in-out infinite, glow-pulse-1 4s ease-in-out infinite;
-    animation-delay: 0s, 0s;
-}
-
-.sphere-2 {
-    width: 300px;
-    height: 300px;
-    background: linear-gradient(135deg, #06b6d4, #10b981);
-    bottom: -5%;
-    left: 10%;
-    animation: float 30s ease-in-out infinite reverse, glow-pulse-2 5s ease-in-out infinite;
-    animation-delay: -7s, -2s;
-}
-
-.sphere-3 {
-    width: 250px;
-    height: 250px;
-    background: linear-gradient(135deg, #10b981, #3b82f6);
-    top: 50%;
-    left: 5%;
-    animation: float 22s ease-in-out infinite, glow-pulse-3 4.5s ease-in-out infinite;
-    animation-delay: -14s, -1s;
-}
-
-@keyframes float {
-    0%, 100% { transform: translate(0px, 0px) scale(1); }
-    50% { transform: translate(30px, 30px) scale(1.05); }
-}
-
-@keyframes glow-pulse-1 {
-    0%, 100% { filter: blur(80px) brightness(0.8); }
-    50% { filter: blur(60px) brightness(1.1); }
-}
-
-@keyframes glow-pulse-2 {
-    0%, 100% { filter: blur(80px) brightness(0.85); }
-    50% { filter: blur(65px) brightness(1.15); }
-}
-
-@keyframes glow-pulse-3 {
-    0%, 100% { filter: blur(80px) brightness(0.9); }
-    50% { filter: blur(70px) brightness(1.2); }
-}
-
-/* Animated Wave Layer */
-.wave-layer {
-    position: absolute;
-    inset: 0;
-    background: 
-        repeating-linear-gradient(
-            0deg,
-            rgba(59, 130, 246, 0.02) 0px,
-            transparent 2px,
-            transparent 20px,
-            rgba(59, 130, 246, 0.02) 22px
-        ),
-        repeating-linear-gradient(
-            90deg,
-            rgba(6, 182, 212, 0.02) 0px,
-            transparent 2px,
-            transparent 20px,
-            rgba(6, 182, 212, 0.02) 22px
-        );
-    animation: wave-drift 15s linear infinite;
-    opacity: 0.4;
-}
-
-@keyframes wave-drift {
-    0% { transform: translateX(0px) translateY(0px); }
-    100% { transform: translateX(100px) translateY(50px); }
-}
-
-/* Light Beam Animation */
-.light-beam {
-    position: absolute;
-    width: 2px;
-    height: 200px;
-    background: linear-gradient(180deg, rgba(59, 130, 246, 0) 0%, rgba(59, 130, 246, 0.4) 50%, rgba(59, 130, 246, 0) 100%);
-    filter: blur(10px);
-    animation: beam-sweep 6s ease-in-out infinite;
-    pointer-events: none;
-}
-
-.beam-1 {
-    top: 20%;
-    left: 20%;
-    animation: beam-sweep 6s ease-in-out infinite;
-    animation-delay: 0s;
-}
-
-.beam-2 {
-    top: 40%;
-    right: 15%;
-    background: linear-gradient(180deg, rgba(6, 182, 212, 0) 0%, rgba(6, 182, 212, 0.3) 50%, rgba(6, 182, 212, 0) 100%);
-    animation: beam-sweep 7s ease-in-out infinite reverse;
-    animation-delay: -2s;
-}
-
-.beam-3 {
-    bottom: 20%;
-    left: 50%;
-    background: linear-gradient(180deg, rgba(16, 185, 129, 0) 0%, rgba(16, 185, 129, 0.3) 50%, rgba(16, 185, 129, 0) 100%);
-    animation: beam-sweep 8s ease-in-out infinite;
-    animation-delay: -4s;
-}
-
-@keyframes beam-sweep {
-    0%, 100% { 
-        opacity: 0;
-        transform: scaleY(0.5) translateY(0px);
-    }
-    50% { 
-        opacity: 1;
-        transform: scaleY(1) translateY(100px);
-    }
-}
-
-/* Particle System */
-.particle {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-}
-
-.particle-1 {
-    width: 4px;
-    height: 4px;
-    background: rgba(59, 130, 246, 0.6);
-    top: 20%;
-    left: 30%;
-    animation: float-particle 8s ease-in-out infinite;
-    animation-delay: 0s;
-}
-
-.particle-2 {
-    width: 3px;
-    height: 3px;
-    background: rgba(6, 182, 212, 0.5);
-    top: 60%;
-    right: 20%;
-    animation: float-particle 10s ease-in-out infinite reverse;
-    animation-delay: -3s;
-}
-
-.particle-3 {
-    width: 5px;
-    height: 5px;
-    background: rgba(16, 185, 129, 0.4);
-    bottom: 30%;
-    left: 40%;
-    animation: float-particle 9s ease-in-out infinite;
-    animation-delay: -5s;
-}
-
-.particle-4 {
-    width: 3px;
-    height: 3px;
-    background: rgba(59, 130, 246, 0.5);
-    top: 70%;
-    right: 30%;
-    animation: float-particle 7s ease-in-out infinite reverse;
-    animation-delay: -2s;
-}
-
-@keyframes float-particle {
-    0%, 100% { 
-        transform: translate(0px, 0px);
-        opacity: 0.3;
-    }
-    50% { 
-        transform: translate(60px, -60px);
-        opacity: 0.8;
-    }
-}
-
-/* Emotional State Glow */
-.emotional-glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
-    animation: emotional-pulse 10s ease-in-out infinite;
-}
-
-@keyframes emotional-pulse {
-    0%, 100% { 
-        opacity: 0.3;
-        filter: blur(120px);
-    }
-    25% { 
-        opacity: 0.5;
-        filter: blur(100px);
-    }
-    50% { 
-        opacity: 0.7;
-        filter: blur(80px);
-    }
-    75% { 
-        opacity: 0.4;
-        filter: blur(110px);
-    }
-}
-
-/* ── MAIN CONTAINER ──────────────────────────────────────────────────────── */
-.main-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 60px 24px 80px;
+.main-wrapper {
     position: relative;
     z-index: 1;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 80px 40px 120px;
+    background: linear-gradient(180deg, rgba(10, 10, 10, 0.3) 0%, rgba(10, 10, 10, 0.5) 100%);
 }
 
-/* ── NAVIGATION BAR ──────────────────────────────────────────────────────── */
+/* Navigation */
 .nav-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 24px;
-    background: var(--surface-glass);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-light);
-    border-radius: 12px;
-    margin-bottom: 48px;
-    box-shadow: var(--shadow-sm);
+    padding: 20px 0;
+    margin-bottom: 60px;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    animation: slideDown 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .nav-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.5px;
+    gap: 12px;
+    font-size: 22px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
 }
 
 .nav-badge {
     font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--accent-secondary);
+    color: #06b6d4;
     background: rgba(6, 182, 212, 0.1);
-    border: 1px solid rgba(6, 182, 212, 0.3);
-    padding: 6px 12px;
-    border-radius: 20px;
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    padding: 8px 16px;
+    border-radius: 40px;
+    transition: all 0.3s ease;
 }
 
-/* ── HERO SECTION ────────────────────────────────────────────────────────── */
+.nav-badge:hover {
+    background: rgba(6, 182, 212, 0.15);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+/* Hero Section */
 .hero {
     text-align: center;
-    margin-bottom: 60px;
-    animation: slideDownFade 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-bottom: 80px;
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1);
+    animation-delay: 0.1s;
+    animation-fill-mode: both;
 }
 
-@keyframes slideDownFade {
+@keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(-30px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
@@ -384,62 +332,75 @@ header { visibility: hidden !important; }
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
-    background: rgba(59, 130, 246, 0.08);
+    padding: 12px 20px;
+    background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.2);
-    border-radius: 24px;
-    margin-bottom: 24px;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--accent-primary);
+    border-radius: 50px;
+    margin-bottom: 32px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #3b82f6;
     font-family: 'Space Mono', monospace;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.hero-badge:hover {
+    background: rgba(59, 130, 246, 0.15);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+    border-color: rgba(59, 130, 246, 0.4);
 }
 
 .hero-dot {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
-    background: var(--accent-primary);
-    animation: pulse-beat 2s ease-in-out infinite;
+    background: #3b82f6;
+    box-shadow: 0 0 15px #3b82f6;
+    animation: pulse-dot 2s ease-in-out infinite;
 }
 
-@keyframes pulse-beat {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(1.2); }
+@keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.3); opacity: 0.5; }
 }
 
 .hero h1 {
-    font-size: clamp(2.2rem, 6vw, 3.5rem);
-    font-weight: 700;
-    line-height: 1.15;
-    color: var(--text-primary);
-    margin-bottom: 16px;
-    letter-spacing: -0.02em;
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    color: white;
+    margin-bottom: 20px;
+    letter-spacing: -2px;
+    word-spacing: 100vw;
 }
 
 .hero h1 span {
-    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 50%, #10b981 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    animation: gradient-shift 8s ease infinite;
+    background-size: 200% 200%;
 }
 
 .hero p {
-    font-size: 16px;
-    color: var(--text-secondary);
-    line-height: 1.6;
-    max-width: 500px;
-    margin: 0 auto 32px;
-    font-weight: 400;
+    font-size: 18px;
+    color: #9ca3af;
+    line-height: 1.8;
+    max-width: 600px;
+    margin: 24px auto 0;
+    font-weight: 300;
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
 }
 
 .hero-stats {
     display: flex;
     justify-content: center;
-    gap: 32px;
+    gap: 60px;
+    margin-top: 48px;
     flex-wrap: wrap;
-    margin-top: 32px;
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
 }
 
 .stat-item {
@@ -447,178 +408,224 @@ header { visibility: hidden !important; }
     flex-direction: column;
     align-items: center;
     gap: 8px;
+    transition: transform 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
 }
 
 .stat-value {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--accent-primary);
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     font-family: 'Space Mono', monospace;
 }
 
 .stat-label {
-    font-size: 12px;
-    color: var(--text-tertiary);
+    font-size: 11px;
+    color: #6b7280;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     font-family: 'Space Mono', monospace;
+    font-weight: 600;
 }
 
-/* ── SECTION HEADER ──────────────────────────────────────────────────────── */
+/* Divider */
+.divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+    margin: 80px 0;
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both;
+}
+
+/* Section Headers - Floating */
 .section-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin: 40px 0 20px;
+    gap: 16px;
+    margin: 60px 0 40px;
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+.section-header:nth-of-type(2) { animation-delay: 0.1s; }
+.section-header:nth-of-type(3) { animation-delay: 0.2s; }
+.section-header:nth-of-type(4) { animation-delay: 0.3s; }
+.section-header:nth-of-type(5) { animation-delay: 0.4s; }
 
 .section-number {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
     background: linear-gradient(135deg, #3b82f6, #06b6d4);
-    border-radius: 8px;
+    border-radius: 12px;
     color: white;
-    font-weight: 700;
-    font-size: 14px;
+    font-weight: 800;
+    font-size: 16px;
     font-family: 'Space Mono', monospace;
+    flex-shrink: 0;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
 }
 
 .section-title {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     text-transform: uppercase;
-    color: var(--text-primary);
-    letter-spacing: 0.8px;
+    color: white;
+    letter-spacing: 1.5px;
 }
 
 .section-line {
     flex: 1;
     height: 1px;
-    background: var(--border-light);
+    background: linear-gradient(90deg, rgba(59, 130, 246, 0.2), transparent);
 }
 
-/* ── FORM CARDS ──────────────────────────────────────────────────────────── */
-.form-card {
-    background: var(--surface-light);
-    border: 1px solid var(--border-light);
-    border-radius: 16px;
-    padding: 32px;
-    margin-bottom: 24px;
-    box-shadow: var(--shadow-sm);
-    backdrop-filter: blur(10px);
-    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+/* Form Container - Organic Flow */
+.form-section {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(6, 182, 212, 0.03) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    border-radius: 24px;
+    padding: 48px;
+    margin-bottom: 32px;
+    backdrop-filter: blur(20px);
+    animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.form-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), transparent);
 }
 
-/* ── SELECT BOX STYLING ──────────────────────────────────────────────────── */
+.form-section:hover {
+    border-color: rgba(59, 130, 246, 0.2);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08) 0%, rgba(6, 182, 212, 0.05) 100%);
+    box-shadow: 0 20px 60px rgba(59, 130, 246, 0.1);
+}
+
+/* Input Styling */
 [data-testid="stSelectbox"] > div > div {
-    background: var(--bg-secondary) !important;
-    border: 1px solid var(--border-light) !important;
-    border-radius: 12px !important;
-    color: var(--text-primary) !important;
+    background: rgba(30, 30, 50, 0.8) !important;
+    border: 1px solid rgba(59, 130, 246, 0.2) !important;
+    border-radius: 14px !important;
+    color: white !important;
     font-weight: 500 !important;
-    height: 44px !important;
-    transition: all 0.2s ease !important;
+    height: 48px !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    backdrop-filter: blur(20px) !important;
 }
 
 [data-testid="stSelectbox"] > div > div:hover {
-    border-color: var(--accent-primary) !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+    border-color: #3b82f6 !important;
+    background: rgba(30, 30, 50, 0.95) !important;
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.2) !important;
 }
 
 [data-testid="stSelectbox"] > div > div:focus-within {
-    border-color: var(--accent-primary) !important;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+    border-color: #06b6d4 !important;
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.3) !important;
 }
 
 ul[role="listbox"] {
-    background: var(--surface-light) !important;
-    border: 1px solid var(--border-light) !important;
-    border-radius: 12px !important;
-    box-shadow: var(--shadow-lg) !important;
+    background: rgba(20, 20, 35, 0.95) !important;
+    border: 1px solid rgba(59, 130, 246, 0.2) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(20px) !important;
 }
 
 li[role="option"] {
-    color: var(--text-primary) !important;
+    color: #e5e7eb !important;
     font-size: 14px !important;
     padding: 12px 16px !important;
-    transition: all 0.15s ease !important;
+    transition: all 0.2s ease !important;
 }
 
 li[role="option"]:hover {
-    background: var(--bg-secondary) !important;
-    color: var(--accent-primary) !important;
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #3b82f6 !important;
 }
 
 [data-testid="stWidgetLabel"] > div > p {
-    color: var(--text-primary) !important;
+    color: white !important;
     font-size: 14px !important;
     font-weight: 600 !important;
-    margin-bottom: 8px !important;
-    letter-spacing: 0.3px !important;
+    margin-bottom: 12px !important;
+    letter-spacing: 0.5px !important;
 }
 
-/* ── COLUMNS ─────────────────────────────────────────────────────────────── */
+/* Columns */
 [data-testid="column"] {
-    padding: 0 8px !important;
+    padding: 0 12px !important;
 }
 
-/* ── BUTTON STYLING ──────────────────────────────────────────────────────── */
+/* Button */
 [data-testid="stButton"] > button {
     width: 100% !important;
     background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%) !important;
     color: white !important;
     font-size: 16px !important;
     font-weight: 700 !important;
-    padding: 16px 32px !important;
+    padding: 18px 40px !important;
     border: none !important;
-    border-radius: 12px !important;
+    border-radius: 16px !important;
     height: auto !important;
-    margin-top: 24px !important;
-    letter-spacing: 0.3px !important;
+    margin-top: 32px !important;
+    letter-spacing: 0.5px !important;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
-    box-shadow: var(--shadow-md) !important;
+    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4) !important;
     cursor: pointer !important;
     text-transform: uppercase;
+    font-family: 'Space Mono', monospace !important;
+    position: relative;
+    overflow: hidden;
+}
+
+[data-testid="stButton"] > button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
 }
 
 [data-testid="stButton"] > button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 20px 40px rgba(59, 130, 246, 0.3) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 30px 60px rgba(59, 130, 246, 0.5) !important;
 }
 
 [data-testid="stButton"] > button:active {
-    transform: translateY(0px) !important;
+    transform: translateY(-1px) !important;
 }
 
-/* ── LOADING SPINNER ─────────────────────────────────────────────────────── */
-[data-testid="stSpinner"] > div {
-    border-color: var(--accent-primary) !important;
-}
-
-/* ── RESULT CARDS ────────────────────────────────────────────────────────── */
-.result-container {
-    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    margin-top: 40px;
+/* Result Container */
+.result-wrap {
+    animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 60px;
 }
 
 @keyframes slideUp {
     from {
         opacity: 0;
-        transform: translateY(30px);
+        transform: translateY(40px);
     }
     to {
         opacity: 1;
@@ -627,97 +634,97 @@ li[role="option"]:hover {
 }
 
 .result-box {
-    border-radius: 20px;
-    padding: 48px 40px;
+    border-radius: 28px;
+    padding: 60px 50px;
     text-align: center;
     position: relative;
     overflow: hidden;
-    border: 1px solid var(--border-light);
-    backdrop-filter: blur(10px);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    backdrop-filter: blur(20px);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(6, 182, 212, 0.03) 100%);
 }
 
 .result-box::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200%;
+    left: 0;
+    right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.4), transparent);
 }
 
 .result-success {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(6, 182, 212, 0.05) 100%);
-    border-color: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(6, 182, 212, 0.03) 100%);
 }
 
 .result-warning {
-    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(245, 158, 11, 0.05) 100%);
-    border-color: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.3);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(245, 158, 11, 0.03) 100%);
 }
 
 .result-icon {
-    font-size: 64px;
-    margin-bottom: 16px;
-    animation: bounce 2s ease-in-out infinite;
+    font-size: 72px;
+    margin-bottom: 20px;
+    animation: bounce-smooth 2s ease-in-out infinite;
 }
 
-@keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+@keyframes bounce-smooth {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
 }
 
 .result-status {
     font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 1px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 8px;
-    color: var(--accent-secondary);
+    margin-bottom: 12px;
+    color: #06b6d4;
 }
 
 .result-warning .result-status {
-    color: var(--accent-danger);
+    color: #ef4444;
 }
 
 .result-title {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 16px;
-    line-height: 1.3;
+    font-size: 36px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 20px;
+    line-height: 1.2;
 }
 
 .result-confidence {
     display: inline-block;
     font-family: 'Space Mono', monospace;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 8px 16px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-    background: rgba(59, 130, 246, 0.1);
-    color: var(--accent-primary);
-    letter-spacing: 0.5px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 24px;
+    margin-bottom: 24px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #3b82f6;
+    letter-spacing: 1px;
 }
 
 .result-warning .result-confidence {
-    background: rgba(239, 68, 68, 0.1);
-    color: var(--accent-danger);
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
 }
 
 .result-description {
-    font-size: 15px;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    max-width: 450px;
-    margin: 0 auto 32px;
+    font-size: 16px;
+    line-height: 1.8;
+    color: #9ca3af;
+    max-width: 500px;
+    margin: 0 auto 40px;
 }
 
 .confidence-bar-container {
-    max-width: 300px;
+    max-width: 350px;
     margin: 0 auto;
 }
 
@@ -726,140 +733,126 @@ li[role="option"]:hover {
     justify-content: space-between;
     font-family: 'Space Mono', monospace;
     font-size: 11px;
-    color: var(--text-tertiary);
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
+    color: #6b7280;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
 }
 
 .confidence-track {
-    height: 6px;
-    background: var(--bg-secondary);
-    border-radius: 3px;
+    height: 8px;
+    background: rgba(59, 130, 246, 0.1);
+    border-radius: 4px;
     overflow: hidden;
 }
 
 .confidence-fill {
     height: 100%;
     background: linear-gradient(90deg, #3b82f6, #06b6d4);
-    border-radius: 3px;
-    animation: fillBar 1s cubic-bezier(0.16, 1, 0.3, 1);
+    border-radius: 4px;
+    animation: fillBar 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
 }
 
 .result-warning .confidence-fill {
     background: linear-gradient(90deg, #ef4444, #f59e0b);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
 }
 
 @keyframes fillBar {
     from { width: 0 !important; }
 }
 
-/* ── DISCLAIMER ──────────────────────────────────────────────────────────── */
+/* Disclaimer */
 .disclaimer {
-    background: rgba(245, 158, 11, 0.05);
+    background: rgba(245, 158, 11, 0.08);
     border: 1px solid rgba(245, 158, 11, 0.2);
-    border-radius: 12px;
-    padding: 16px;
-    margin-top: 24px;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 32px;
     font-size: 13px;
-    color: var(--text-secondary);
-    line-height: 1.6;
+    color: #d4a574;
+    line-height: 1.7;
     display: flex;
-    gap: 12px;
+    gap: 14px;
     align-items: flex-start;
+    backdrop-filter: blur(10px);
 }
 
 .disclaimer-icon {
     flex-shrink: 0;
-    font-size: 16px;
+    font-size: 18px;
     margin-top: 2px;
 }
 
-/* ── FOOTER ──────────────────────────────────────────────────────────────── */
+/* Footer */
 .footer {
     text-align: center;
-    margin-top: 60px;
+    margin-top: 80px;
     padding-top: 40px;
-    border-top: 1px solid var(--border-light);
+    border-top: 1px solid rgba(59, 130, 246, 0.1);
     font-family: 'Space Mono', monospace;
-    font-size: 11px;
-    color: var(--text-tertiary);
-    letter-spacing: 1px;
+    font-size: 10px;
+    color: #6b7280;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
 }
 
-/* ── DIVIDER ─────────────────────────────────────────────────────────────── */
-.divider {
-    height: 1px;
-    background: var(--border-light);
-    margin: 48px 0;
-    position: relative;
-}
-
-.divider::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: -1px;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
-    border-radius: 2px;
-}
-
-/* ── RESPONSIVE ──────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-    .main-container {
-        padding: 40px 16px 60px;
-    }
-    
-    .form-card {
-        padding: 20px;
-    }
-    
-    .nav-bar {
-        padding: 12px 16px;
-        margin-bottom: 32px;
-    }
-    
-    .hero {
-        margin-bottom: 40px;
-    }
-    
-    .hero h1 {
-        font-size: 2rem;
-    }
-    
-    .hero-stats {
-        gap: 20px;
-    }
-    
-    .result-box {
-        padding: 32px 20px;
-    }
-    
-    .result-icon {
-        font-size: 48px;
-    }
-    
-    .result-title {
-        font-size: 24px;
-    }
-}
-
-/* ── EXPANDER STYLING ────────────────────────────────────────────────────── */
+/* Expander */
 details {
-    background: var(--surface-light) !important;
-    border: 1px solid var(--border-light) !important;
-    border-radius: 12px !important;
-    margin-top: 24px !important;
+    background: rgba(59, 130, 246, 0.05) !important;
+    border: 1px solid rgba(59, 130, 246, 0.1) !important;
+    border-radius: 14px !important;
+    margin-top: 32px !important;
+    backdrop-filter: blur(10px) !important;
 }
 
 summary {
-    color: var(--text-secondary) !important;
-    font-size: 13px !important;
+    color: #9ca3af !important;
+    font-size: 12px !important;
     font-family: 'Space Mono', monospace !important;
-    padding: 12px 16px !important;
+    padding: 16px !important;
+    font-weight: 600 !important;
+}
+
+/* Spinner */
+[data-testid="stSpinner"] > div {
+    border-color: #3b82f6 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main-wrapper {
+        padding: 60px 20px 80px;
+    }
+    
+    .form-section {
+        padding: 32px 20px;
+    }
+    
+    .hero h1 {
+        font-size: 2.2rem;
+    }
+    
+    .hero-stats {
+        gap: 30px;
+    }
+    
+    .result-box {
+        padding: 40px 24px;
+    }
+    
+    .result-icon {
+        font-size: 56px;
+    }
+    
+    .result-title {
+        font-size: 28px;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: 20px;
+    }
 }
 
 </style>
@@ -867,41 +860,39 @@ summary {
 
 # ── ANIMATED BACKGROUND HTML ────────────────────────────────────────────────
 st.markdown("""
-<!-- ANIMATED BACKGROUND ──────────────────────────────────────────────────────── -->
 <div class="animated-bg">
-    <!-- Neural Network Breathing Layer -->
-    <div class="neural-bg"></div>
+    <!-- Gradient Mesh Base -->
+    <div class="gradient-mesh"></div>
     
-    <!-- Emotional State Glow -->
-    <div class="emotional-glow"></div>
+    <!-- Pulsing Auras -->
+    <div class="aura aura-1"></div>
+    <div class="aura aura-2"></div>
     
-    <!-- Wave Patterns -->
-    <div class="wave-layer"></div>
+    <!-- Organic Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
     
-    <!-- Floating Healing Orbs (Neural Nodes) -->
-    <div class="floating-sphere sphere-1"></div>
-    <div class="floating-sphere sphere-2"></div>
-    <div class="floating-sphere sphere-3"></div>
+    <!-- Light Streaks -->
+    <div class="light-streak streak-1"></div>
+    <div class="light-streak streak-2"></div>
+    <div class="light-streak streak-3"></div>
     
-    <!-- Light Beams (Hope and Clarity) -->
-    <div class="light-beam beam-1"></div>
-    <div class="light-beam beam-2"></div>
-    <div class="light-beam beam-3"></div>
-    
-    <!-- Particle System (Neural Activity) -->
-    <div class="particle particle-1"></div>
-    <div class="particle particle-2"></div>
-    <div class="particle particle-3"></div>
-    <div class="particle particle-4"></div>
+    <!-- Noise -->
+    <div class="noise-overlay"></div>
 </div>
-<div class="main-container">
+
+<div class="main-wrapper">
 """, unsafe_allow_html=True)
 
 # ── NAVIGATION BAR ──────────────────────────────────────────────────────────
 st.markdown("""
 <div class="nav-bar">
     <div class="nav-logo">🧠 MindVault</div>
-    <div class="nav-badge">AI Powered</div>
+    <div class="nav-badge">
+        <span style="margin-right: 4px;">⚡</span> Cutting Edge AI
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -910,25 +901,25 @@ st.markdown("""
 <div class="hero">
     <div class="hero-badge">
         <div class="hero-dot"></div>
-        Personalized Mental Health Assessment
+        Advanced Mental Health Assessment
     </div>
-    <h1>Understand Your <span>Mental State</span></h1>
+    <h1>Your Mind <span>Matters</span></h1>
     <p>
-        Answer thoughtful questions about your lifestyle and mental patterns. 
-        Our AI model provides evidence-based insights in seconds.
+        Discover insights about your mental wellbeing through an AI-powered assessment. 
+        Answer 14 mindful questions and get personalized, data-driven clarity.
     </p>
     <div class="hero-stats">
         <div class="stat-item">
             <div class="stat-value">72%</div>
-            <div class="stat-label">Model Accuracy</div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-value">14</div>
-            <div class="stat-label">Assessment Items</div>
+            <div class="stat-label">Accuracy</div>
         </div>
         <div class="stat-item">
             <div class="stat-value">&lt;1s</div>
-            <div class="stat-label">Prediction Time</div>
+            <div class="stat-label">Analysis</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">100%</div>
+            <div class="stat-label">Private</div>
         </div>
     </div>
 </div>
@@ -957,32 +948,16 @@ st.markdown("""
     <div class="section-title">Personal Background</div>
     <div class="section-line"></div>
 </div>
-<div class="form-card">
+<div class="form-section">
 """, unsafe_allow_html=True)
 
 col1, col2 = st.columns(2, gap="medium")
 with col1:
-    gender = st.selectbox(
-        "Gender",
-        list(GENDER_MAP.keys()),
-        key="gender_select"
-    )
-    occupation = st.selectbox(
-        "Occupation",
-        list(OCC_MAP.keys()),
-        key="occupation_select"
-    )
+    gender = st.selectbox("Gender", list(GENDER_MAP.keys()), key="gender_select")
+    occupation = st.selectbox("Occupation", list(OCC_MAP.keys()), key="occupation_select")
 with col2:
-    self_employed = st.selectbox(
-        "Are you self-employed?",
-        list(YESNO.keys()),
-        key="self_emp_select"
-    )
-    family_history = st.selectbox(
-        "Family history of mental illness?",
-        list(YESNO.keys()),
-        key="family_select"
-    )
+    self_employed = st.selectbox("Are you self-employed?", list(YESNO.keys()), key="self_emp_select")
+    family_history = st.selectbox("Family history of mental illness?", list(YESNO.keys()), key="family_select")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -993,32 +968,16 @@ st.markdown("""
     <div class="section-title">Stress & Emotional State</div>
     <div class="section-line"></div>
 </div>
-<div class="form-card">
+<div class="form-section">
 """, unsafe_allow_html=True)
 
 col3, col4 = st.columns(2, gap="medium")
 with col3:
-    growing_stress = st.selectbox(
-        "Growing stress lately?",
-        list(YESNO_MAYBE.keys()),
-        key="stress_select"
-    )
-    mood_swings = st.selectbox(
-        "Mood swing intensity?",
-        list(MOOD_MAP.keys()),
-        key="mood_select"
-    )
+    growing_stress = st.selectbox("Growing stress lately?", list(YESNO_MAYBE.keys()), key="stress_select")
+    mood_swings = st.selectbox("Mood swing intensity?", list(MOOD_MAP.keys()), key="mood_select")
 with col4:
-    coping_struggles = st.selectbox(
-        "Struggling to cope with daily life?",
-        list(YESNO.keys()),
-        key="coping_select"
-    )
-    changes_habits = st.selectbox(
-        "Noticeable changes in habits?",
-        list(YESNO_MAYBE.keys()),
-        key="habits_select"
-    )
+    coping_struggles = st.selectbox("Struggling to cope with daily life?", list(YESNO.keys()), key="coping_select")
+    changes_habits = st.selectbox("Noticeable changes in habits?", list(YESNO_MAYBE.keys()), key="habits_select")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1029,27 +988,15 @@ st.markdown("""
     <div class="section-title">Behaviour & Social Life</div>
     <div class="section-line"></div>
 </div>
-<div class="form-card">
+<div class="form-section">
 """, unsafe_allow_html=True)
 
 col5, col6 = st.columns(2, gap="medium")
 with col5:
-    work_interest = st.selectbox(
-        "Lost interest in work or hobbies?",
-        list(YESNO_MAYBE.keys()),
-        key="interest_select"
-    )
-    social_weakness = st.selectbox(
-        "Feeling socially withdrawn?",
-        list(YESNO_MAYBE.keys()),
-        key="social_select"
-    )
+    work_interest = st.selectbox("Lost interest in work or hobbies?", list(YESNO_MAYBE.keys()), key="interest_select")
+    social_weakness = st.selectbox("Feeling socially withdrawn?", list(YESNO_MAYBE.keys()), key="social_select")
 with col6:
-    days_indoors = st.selectbox(
-        "Days spent indoors (past month)?",
-        list(DAYS_MAP.keys()),
-        key="days_select"
-    )
+    days_indoors = st.selectbox("Days spent indoors (past month)?", list(DAYS_MAP.keys()), key="days_select")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1060,34 +1007,22 @@ st.markdown("""
     <div class="section-title">Awareness & Support Access</div>
     <div class="section-line"></div>
 </div>
-<div class="form-card">
+<div class="form-section">
 """, unsafe_allow_html=True)
 
 col7, col8 = st.columns(2, gap="medium")
 with col7:
-    mh_history = st.selectbox(
-        "Had mental health issues before?",
-        list(YESNO_MAYBE.keys()),
-        key="history_select"
-    )
-    mh_interview = st.selectbox(
-        "Comfortable discussing MH in interviews?",
-        list(YESNO_MAYBE.keys()),
-        key="interview_select"
-    )
+    mh_history = st.selectbox("Had mental health issues before?", list(YESNO_MAYBE.keys()), key="history_select")
+    mh_interview = st.selectbox("Comfortable discussing MH in interviews?", list(YESNO_MAYBE.keys()), key="interview_select")
 with col8:
-    care_options = st.selectbox(
-        "Access to mental health care?",
-        list(CARE_MAP.keys()),
-        key="care_select"
-    )
+    care_options = st.selectbox("Access to mental health care?", list(CARE_MAP.keys()), key="care_select")
 
 st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
 # ── PREDICT BUTTON ──────────────────────────────────────────────────────────
-predict_clicked = st.button("✨ Run Assessment", key="predict_button")
+predict_clicked = st.button("✨ Reveal Your Assessment", key="predict_button")
 
 # ── PREDICTION LOGIC ────────────────────────────────────────────────────────
 if predict_clicked:
@@ -1108,7 +1043,7 @@ if predict_clicked:
         "care_options": CARE_MAP[care_options],
     }
 
-    with st.spinner("🔄 Analyzing your assessment..."):
+    with st.spinner("🧠 Analyzing your assessment..."):
         try:
             response = requests.post(API_URL, json=payload, timeout=REQUEST_TIMEOUT)
             response.raise_for_status()
@@ -1126,14 +1061,14 @@ if predict_clicked:
 
             if is_high_risk:
                 st.markdown(f"""
-                <div class="result-container">
+                <div class="result-wrap">
                     <div class="result-box result-warning">
                         <div class="result-icon">🔴</div>
-                        <div class="result-status">Assessment Results</div>
+                        <div class="result-status">Assessment Complete</div>
                         <div class="result-title">Professional Support Recommended</div>
                         <div class="result-confidence">Confidence: {conf_str}</div>
                         <p class="result-description">
-                            {explanation or 'Your assessment suggests that seeking professional mental health support could be beneficial for your wellbeing.'}
+                            {explanation or 'Your assessment suggests that professional mental health support would be beneficial.'}
                         </p>
                         <div class="confidence-bar-container">
                             <div class="confidence-label">
@@ -1149,14 +1084,14 @@ if predict_clicked:
                 """, unsafe_allow_html=True)
             else:
                 st.markdown(f"""
-                <div class="result-container">
+                <div class="result-wrap">
                     <div class="result-box result-success">
                         <div class="result-icon">🟢</div>
-                        <div class="result-status">Assessment Results</div>
+                        <div class="result-status">Assessment Complete</div>
                         <div class="result-title">Positive Mental State</div>
                         <div class="result-confidence">Confidence: {conf_str}</div>
                         <p class="result-description">
-                            {explanation or 'Your assessment indicates a healthy mental state. Continue prioritizing your wellbeing and self-care practices.'}
+                            {explanation or 'Your assessment indicates a healthy mental state. Keep prioritizing self-care and wellbeing.'}
                         </p>
                         <div class="confidence-bar-container">
                             <div class="confidence-label">
@@ -1175,36 +1110,34 @@ if predict_clicked:
             <div class="disclaimer">
                 <span class="disclaimer-icon">⚠️</span>
                 <span>
-                    <strong>Important Disclaimer:</strong> MindVault is an educational assessment tool powered by machine learning. 
-                    It is <strong>not a medical diagnosis</strong> and should never replace professional mental health consultation. 
-                    If you're experiencing distress, please reach out to a licensed mental health professional or crisis support service.
+                    <strong>Important:</strong> This assessment is educational only and not a medical diagnosis. 
+                    Always consult with a licensed mental health professional for proper guidance.
                 </span>
             </div>
             """, unsafe_allow_html=True)
 
         except requests.exceptions.Timeout:
-            st.error("⏱️ The API is taking longer than expected. Please try again in a moment.")
+            st.error("⏱️ Request timeout. Please try again.")
         except requests.exceptions.ConnectionError:
-            st.error("🌐 Unable to reach the assessment service. Please verify your connection and try again.")
+            st.error("🌐 Connection error. Check your network or API configuration.")
         except requests.exceptions.HTTPError as e:
             try:
                 detail = response.json()
                 error_msg = detail.get("error", str(detail))
-            except Exception:
+            except:
                 error_msg = response.text
-            st.error(f"❌ Service Error: {error_msg}")
+            st.error(f"❌ API Error: {error_msg}")
         except Exception as e:
-            st.error(f"❌ An unexpected error occurred: {str(e)}")
+            st.error(f"❌ Error: {str(e)}")
 
 # ── FOOTER ──────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="footer">
-    MindVault Assessment Platform &nbsp;·&nbsp; Built with ❤️ &nbsp;·&nbsp; Educational Use Only
+    MindVault &nbsp;·&nbsp; Cutting Edge Mental Health Assessment &nbsp;·&nbsp; Educational Purpose
 </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ── DEBUG INFO (HIDDEN BY DEFAULT) ──────────────────────────────────────────
-with st.expander("🔧 Debug Information"):
-    st.code(f"API_URL: {API_URL}", language="text")
-    st.info("This section is for development purposes only.")
+# ── DEBUG SECTION ───────────────────────────────────────────────────────────
+with st.expander("🔧 Developer Info"):
+    st.code(f"API Endpoint: {API_URL}", language="text")
