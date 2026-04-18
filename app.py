@@ -78,11 +78,33 @@ header { visibility: hidden !important; }
     background: linear-gradient(135deg, #fafbfc 0%, #f5f7fa 50%, #f0f4f9 100%);
 }
 
+/* Neural Network Background */
+.neural-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 50%, rgba(59, 130, 246, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 70% 50%, rgba(6, 182, 212, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(16, 185, 129, 0.02) 0%, transparent 50%);
+    animation: breathe 8s ease-in-out infinite;
+}
+
+@keyframes breathe {
+    0%, 100% { 
+        opacity: 0.4;
+        filter: blur(100px);
+    }
+    50% { 
+        opacity: 0.7;
+        filter: blur(80px);
+    }
+}
+
+/* Floating Healing Orbs */
 .floating-sphere {
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.3;
+    opacity: 0.25;
     animation: float 20s ease-in-out infinite;
 }
 
@@ -92,7 +114,8 @@ header { visibility: hidden !important; }
     background: linear-gradient(135deg, #3b82f6, #06b6d4);
     top: -10%;
     right: -5%;
-    animation-delay: 0s;
+    animation: float 25s ease-in-out infinite, glow-pulse-1 4s ease-in-out infinite;
+    animation-delay: 0s, 0s;
 }
 
 .sphere-2 {
@@ -101,7 +124,8 @@ header { visibility: hidden !important; }
     background: linear-gradient(135deg, #06b6d4, #10b981);
     bottom: -5%;
     left: 10%;
-    animation-delay: -7s;
+    animation: float 30s ease-in-out infinite reverse, glow-pulse-2 5s ease-in-out infinite;
+    animation-delay: -7s, -2s;
 }
 
 .sphere-3 {
@@ -110,12 +134,186 @@ header { visibility: hidden !important; }
     background: linear-gradient(135deg, #10b981, #3b82f6);
     top: 50%;
     left: 5%;
-    animation-delay: -14s;
+    animation: float 22s ease-in-out infinite, glow-pulse-3 4.5s ease-in-out infinite;
+    animation-delay: -14s, -1s;
 }
 
 @keyframes float {
     0%, 100% { transform: translate(0px, 0px) scale(1); }
     50% { transform: translate(30px, 30px) scale(1.05); }
+}
+
+@keyframes glow-pulse-1 {
+    0%, 100% { filter: blur(80px) brightness(0.8); }
+    50% { filter: blur(60px) brightness(1.1); }
+}
+
+@keyframes glow-pulse-2 {
+    0%, 100% { filter: blur(80px) brightness(0.85); }
+    50% { filter: blur(65px) brightness(1.15); }
+}
+
+@keyframes glow-pulse-3 {
+    0%, 100% { filter: blur(80px) brightness(0.9); }
+    50% { filter: blur(70px) brightness(1.2); }
+}
+
+/* Animated Wave Layer */
+.wave-layer {
+    position: absolute;
+    inset: 0;
+    background: 
+        repeating-linear-gradient(
+            0deg,
+            rgba(59, 130, 246, 0.02) 0px,
+            transparent 2px,
+            transparent 20px,
+            rgba(59, 130, 246, 0.02) 22px
+        ),
+        repeating-linear-gradient(
+            90deg,
+            rgba(6, 182, 212, 0.02) 0px,
+            transparent 2px,
+            transparent 20px,
+            rgba(6, 182, 212, 0.02) 22px
+        );
+    animation: wave-drift 15s linear infinite;
+    opacity: 0.4;
+}
+
+@keyframes wave-drift {
+    0% { transform: translateX(0px) translateY(0px); }
+    100% { transform: translateX(100px) translateY(50px); }
+}
+
+/* Light Beam Animation */
+.light-beam {
+    position: absolute;
+    width: 2px;
+    height: 200px;
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0) 0%, rgba(59, 130, 246, 0.4) 50%, rgba(59, 130, 246, 0) 100%);
+    filter: blur(10px);
+    animation: beam-sweep 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.beam-1 {
+    top: 20%;
+    left: 20%;
+    animation: beam-sweep 6s ease-in-out infinite;
+    animation-delay: 0s;
+}
+
+.beam-2 {
+    top: 40%;
+    right: 15%;
+    background: linear-gradient(180deg, rgba(6, 182, 212, 0) 0%, rgba(6, 182, 212, 0.3) 50%, rgba(6, 182, 212, 0) 100%);
+    animation: beam-sweep 7s ease-in-out infinite reverse;
+    animation-delay: -2s;
+}
+
+.beam-3 {
+    bottom: 20%;
+    left: 50%;
+    background: linear-gradient(180deg, rgba(16, 185, 129, 0) 0%, rgba(16, 185, 129, 0.3) 50%, rgba(16, 185, 129, 0) 100%);
+    animation: beam-sweep 8s ease-in-out infinite;
+    animation-delay: -4s;
+}
+
+@keyframes beam-sweep {
+    0%, 100% { 
+        opacity: 0;
+        transform: scaleY(0.5) translateY(0px);
+    }
+    50% { 
+        opacity: 1;
+        transform: scaleY(1) translateY(100px);
+    }
+}
+
+/* Particle System */
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.particle-1 {
+    width: 4px;
+    height: 4px;
+    background: rgba(59, 130, 246, 0.6);
+    top: 20%;
+    left: 30%;
+    animation: float-particle 8s ease-in-out infinite;
+    animation-delay: 0s;
+}
+
+.particle-2 {
+    width: 3px;
+    height: 3px;
+    background: rgba(6, 182, 212, 0.5);
+    top: 60%;
+    right: 20%;
+    animation: float-particle 10s ease-in-out infinite reverse;
+    animation-delay: -3s;
+}
+
+.particle-3 {
+    width: 5px;
+    height: 5px;
+    background: rgba(16, 185, 129, 0.4);
+    bottom: 30%;
+    left: 40%;
+    animation: float-particle 9s ease-in-out infinite;
+    animation-delay: -5s;
+}
+
+.particle-4 {
+    width: 3px;
+    height: 3px;
+    background: rgba(59, 130, 246, 0.5);
+    top: 70%;
+    right: 30%;
+    animation: float-particle 7s ease-in-out infinite reverse;
+    animation-delay: -2s;
+}
+
+@keyframes float-particle {
+    0%, 100% { 
+        transform: translate(0px, 0px);
+        opacity: 0.3;
+    }
+    50% { 
+        transform: translate(60px, -60px);
+        opacity: 0.8;
+    }
+}
+
+/* Emotional State Glow */
+.emotional-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+    animation: emotional-pulse 10s ease-in-out infinite;
+}
+
+@keyframes emotional-pulse {
+    0%, 100% { 
+        opacity: 0.3;
+        filter: blur(120px);
+    }
+    25% { 
+        opacity: 0.5;
+        filter: blur(100px);
+    }
+    50% { 
+        opacity: 0.7;
+        filter: blur(80px);
+    }
+    75% { 
+        opacity: 0.4;
+        filter: blur(110px);
+    }
 }
 
 /* ── MAIN CONTAINER ──────────────────────────────────────────────────────── */
@@ -669,10 +867,32 @@ summary {
 
 # ── ANIMATED BACKGROUND HTML ────────────────────────────────────────────────
 st.markdown("""
+<!-- ANIMATED BACKGROUND ──────────────────────────────────────────────────────── -->
 <div class="animated-bg">
+    <!-- Neural Network Breathing Layer -->
+    <div class="neural-bg"></div>
+    
+    <!-- Emotional State Glow -->
+    <div class="emotional-glow"></div>
+    
+    <!-- Wave Patterns -->
+    <div class="wave-layer"></div>
+    
+    <!-- Floating Healing Orbs (Neural Nodes) -->
     <div class="floating-sphere sphere-1"></div>
     <div class="floating-sphere sphere-2"></div>
     <div class="floating-sphere sphere-3"></div>
+    
+    <!-- Light Beams (Hope and Clarity) -->
+    <div class="light-beam beam-1"></div>
+    <div class="light-beam beam-2"></div>
+    <div class="light-beam beam-3"></div>
+    
+    <!-- Particle System (Neural Activity) -->
+    <div class="particle particle-1"></div>
+    <div class="particle particle-2"></div>
+    <div class="particle particle-3"></div>
+    <div class="particle particle-4"></div>
 </div>
 <div class="main-container">
 """, unsafe_allow_html=True)
