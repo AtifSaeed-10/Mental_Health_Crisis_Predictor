@@ -1,6 +1,7 @@
 import os
 import streamlit as st
-import requests
+import joblib
+import numpy as np
 
 st.set_page_config(
     page_title="MindVault · Mental Health Assessment",
@@ -9,13 +10,11 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-API_URL = (
-    st.secrets.get("API_URL", None)
-    if hasattr(st, "secrets")
-    else None
-) or os.getenv("API_URL") or "https://mentalhealthcrisispredictor-production.up.railway.app/predict"
-
-REQUEST_TIMEOUT = 20
+# ── LOAD MODEL ───────────────────────────────────────────────────────────────
+@st.cache_resource
+def load_model():
+    model = joblib.load("mental_health_model.pkl")
+    return model
 
 # ── CSS ─────────────────────────────────────────────────────────────────────
 st.markdown("""
@@ -410,19 +409,6 @@ li[role="option"]:hover {
     color:#2d3748;
 }
 
-details {
-    background: rgba(99,179,237,0.03) !important;
-    border: 1px solid rgba(99,179,237,0.08) !important;
-    border-radius: 13px !important;
-    margin-top: 28px !important;
-}
-summary {
-    color:#4a5568 !important;
-    font-size:11px !important;
-    font-family:'Space Mono',monospace !important;
-    padding:14px !important;
-}
-
 /* ── SPINNER ────────────────────────────────────────────────────────────── */
 [data-testid="stSpinner"] > div { border-color:#63b3ed !important; }
 
@@ -453,12 +439,10 @@ st.markdown("""
     resize();
     window.addEventListener('resize', resize);
 
-    /* ── CONFIG ─────────────────────────────────────────────────── */
-    var N   = 72;    // neuron count
-    var MAXD = 190;  // max connection distance
+    var N   = 72;
+    var MAXD = 190;
     var time = 0;
 
-    /* ── NEURON CLASS ───────────────────────────────────────────── */
     function Neuron(){
         this.x  = Math.random() * canvas.width;
         this.y  = Math.random() * canvas.height;
@@ -468,7 +452,6 @@ st.markdown("""
         this.br = this.r;
         this.phase = Math.random() * Math.PI * 2;
         this.speed = .012 + Math.random() * .016;
-        // hue: electric blue → cyan range
         this.h  = 195 + Math.random() * 35;
         this.a  = .35 + Math.random() * .5;
     }
@@ -482,7 +465,6 @@ st.markdown("""
     };
     Neuron.prototype.draw = function(){
         var glow = .6 + Math.sin(this.phase) * .4;
-        // halo
         var g = ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r*6);
         g.addColorStop(0, 'hsla('+this.h+',85%,68%,'+(this.a*glow*.7)+')');
         g.addColorStop(1, 'hsla('+this.h+',85%,68%,0)');
@@ -490,7 +472,6 @@ st.markdown("""
         ctx.arc(this.x,this.y,this.r*6,0,Math.PI*2);
         ctx.fillStyle = g;
         ctx.fill();
-        // core
         ctx.beginPath();
         ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
         ctx.fillStyle = 'hsla('+this.h+',90%,78%,'+this.a+')';
@@ -500,7 +481,6 @@ st.markdown("""
     var neurons = [];
     for(var i=0;i<N;i++) neurons.push(new Neuron());
 
-    /* ── SIGNAL CLASS (pulse along axon) ────────────────────────── */
     function Signal(a,b){
         this.a = a; this.b = b;
         this.t = 0;
@@ -527,7 +507,6 @@ st.markdown("""
     var signals = [];
     var sigTimer = 0;
 
-    /* ── AURORA ─────────────────────────────────────────────────── */
     function aurora(cx,cy,rx,ry,h,a,t){
         var x = cx + Math.sin(t*.7)  * rx * .35;
         var y = cy + Math.cos(t*.55) * ry * .3;
@@ -541,7 +520,6 @@ st.markdown("""
         ctx.fill();
     }
 
-    /* ── EEG BRAIN WAVES ────────────────────────────────────────── */
     function eegWave(yBase, amp1, amp2, amp3, freq1, freq2, freq3, phase, alpha){
         ctx.beginPath();
         ctx.lineWidth = 1.2;
@@ -552,7 +530,6 @@ st.markdown("""
                 + Math.sin(x*freq1 + phase*1.6) * amp1
                 + Math.sin(x*freq2 - phase*1.0) * amp2
                 + Math.sin(x*freq3 + phase*2.4) * amp3
-                // spike every ~120px
                 + Math.exp(-Math.pow((x%120-60),2)/80) * amp1 * 1.2 * Math.sin(x*.3+phase);
             if(first){ ctx.moveTo(x,y); first=false; }
             else ctx.lineTo(x,y);
@@ -560,10 +537,7 @@ st.markdown("""
         ctx.stroke();
     }
 
-    /* ── SHOOTING STARS ─────────────────────────────────────────── */
-    function ShootingStar(){
-        this.reset();
-    }
+    function ShootingStar(){ this.reset(); }
     ShootingStar.prototype.reset = function(){
         this.x  = Math.random() * canvas.width;
         this.y  = Math.random() * canvas.height * .5;
@@ -597,7 +571,6 @@ st.markdown("""
         ctx.strokeStyle=g;
         ctx.lineWidth=1.5;
         ctx.stroke();
-        // head dot
         ctx.beginPath();
         ctx.arc(this.x,this.y,1.8,0,Math.PI*2);
         ctx.fillStyle='rgba(200,230,255,'+a+')';
@@ -606,10 +579,8 @@ st.markdown("""
 
     var stars=[];
     for(var s=0;s<4;s++) stars.push(new ShootingStar());
-    // stagger initial positions
     stars.forEach(function(s,i){ s.life = Math.floor(s.maxLife*(i/4)); });
 
-    /* ── VIGNETTE ───────────────────────────────────────────────── */
     function vignette(){
         var g = ctx.createRadialGradient(
             canvas.width*.5, canvas.height*.5, canvas.height*.15,
@@ -621,12 +592,10 @@ st.markdown("""
         ctx.fillRect(0,0,canvas.width,canvas.height);
     }
 
-    /* ── MAIN LOOP ───────────────────────────────────────────────── */
     function loop(){
         time += .007;
         sigTimer++;
 
-        /* base */
         var bg=ctx.createLinearGradient(0,0,canvas.width,canvas.height);
         bg.addColorStop(0,'#03050f');
         bg.addColorStop(.5,'#070c1e');
@@ -634,7 +603,6 @@ st.markdown("""
         ctx.fillStyle=bg;
         ctx.fillRect(0,0,canvas.width,canvas.height);
 
-        /* aurora layers */
         ctx.globalCompositeOperation='screen';
         aurora(canvas.width*.18, canvas.height*.25, 320, 260, 215, .045, time);
         aurora(canvas.width*.82, canvas.height*.6,  280, 220, 195, .038, -time*.9);
@@ -642,7 +610,6 @@ st.markdown("""
         aurora(canvas.width*.3,  canvas.height*.8,  200, 170, 170, .025, -time*.7);
         ctx.globalCompositeOperation='source-over';
 
-        /* connections */
         for(var i=0;i<neurons.length;i++){
             for(var j=i+1;j<neurons.length;j++){
                 var dx=neurons[i].x-neurons[j].x;
@@ -661,7 +628,6 @@ st.markdown("""
             }
         }
 
-        /* spawn signals */
         if(sigTimer>45 && signals.length<12){
             sigTimer=0;
             var a=neurons[Math.floor(Math.random()*neurons.length)];
@@ -672,24 +638,19 @@ st.markdown("""
             }
         }
 
-        /* signals */
         for(var si=signals.length-1;si>=0;si--){
             signals[si].draw();
             if(signals[si].tick()) signals.splice(si,1);
         }
 
-        /* neurons */
         neurons.forEach(function(n){ n.tick(); n.draw(); });
 
-        /* EEG waves */
         eegWave(canvas.height*.82, 14,8,5,  .018,.009,.04, time, .10);
         eegWave(canvas.height*.85, 18,10,6, .016,.011,.038,time, .07);
         eegWave(canvas.height*.88, 11,7,4,  .020,.008,.042,time, .05);
 
-        /* shooting stars */
         stars.forEach(function(s){ s.draw(); s.tick(); });
 
-        /* vignette */
         vignette();
 
         requestAnimationFrame(loop);
@@ -768,7 +729,7 @@ with c1:
     gender     = st.selectbox("Gender",        list(GENDER_MAP.keys()), key="g")
     occupation = st.selectbox("Occupation",    list(OCC_MAP.keys()),    key="o")
 with c2:
-    self_employed  = st.selectbox("Self-employed?",               list(YESNO.keys()), key="se")
+    self_employed  = st.selectbox("Self-employed?",                    list(YESNO.keys()), key="se")
     family_history = st.selectbox("Family history of mental illness?", list(YESNO.keys()), key="fh")
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -783,11 +744,11 @@ st.markdown("""
 """, unsafe_allow_html=True)
 c3, c4 = st.columns(2, gap="large")
 with c3:
-    growing_stress   = st.selectbox("Growing stress lately?",          list(YESNO_MAYBE.keys()), key="gs")
-    mood_swings      = st.selectbox("Mood swing intensity?",           list(MOOD_MAP.keys()),    key="ms")
+    growing_stress   = st.selectbox("Growing stress lately?",        list(YESNO_MAYBE.keys()), key="gs")
+    mood_swings      = st.selectbox("Mood swing intensity?",         list(MOOD_MAP.keys()),    key="ms")
 with c4:
-    coping_struggles = st.selectbox("Struggling to cope daily?",       list(YESNO.keys()),       key="cs")
-    changes_habits   = st.selectbox("Noticeable changes in habits?",   list(YESNO_MAYBE.keys()), key="ch")
+    coping_struggles = st.selectbox("Struggling to cope daily?",     list(YESNO.keys()),       key="cs")
+    changes_habits   = st.selectbox("Noticeable changes in habits?", list(YESNO_MAYBE.keys()), key="ch")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ── SECTION 03 ────────────────────────────────────────────────────────────────
@@ -801,10 +762,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 c5, c6 = st.columns(2, gap="large")
 with c5:
-    work_interest   = st.selectbox("Lost interest in work/hobbies?",  list(YESNO_MAYBE.keys()), key="wi")
-    social_weakness = st.selectbox("Feeling socially withdrawn?",     list(YESNO_MAYBE.keys()), key="sw")
+    work_interest   = st.selectbox("Lost interest in work/hobbies?", list(YESNO_MAYBE.keys()), key="wi")
+    social_weakness = st.selectbox("Feeling socially withdrawn?",    list(YESNO_MAYBE.keys()), key="sw")
 with c6:
-    days_indoors    = st.selectbox("Days spent indoors (past month)?",list(DAYS_MAP.keys()),    key="di")
+    days_indoors    = st.selectbox("Days spent indoors (past month)?", list(DAYS_MAP.keys()),  key="di")
 st.markdown('</div>', unsafe_allow_html=True)
 
 # ── SECTION 04 ────────────────────────────────────────────────────────────────
@@ -818,10 +779,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 c7, c8 = st.columns(2, gap="large")
 with c7:
-    mh_history   = st.selectbox("Prior mental health episodes?",          list(YESNO_MAYBE.keys()), key="mhh")
-    mh_interview = st.selectbox("Comfortable discussing MH at work?",     list(YESNO_MAYBE.keys()), key="mhi")
+    mh_history   = st.selectbox("Prior mental health episodes?",      list(YESNO_MAYBE.keys()), key="mhh")
+    mh_interview = st.selectbox("Comfortable discussing MH at work?", list(YESNO_MAYBE.keys()), key="mhi")
 with c8:
-    care_options = st.selectbox("Access to mental health care?",          list(CARE_MAP.keys()),    key="co")
+    care_options = st.selectbox("Access to mental health care?",      list(CARE_MAP.keys()),    key="co")
 st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
@@ -831,35 +792,67 @@ predict_clicked = st.button("✦  Reveal My Assessment", key="predict_btn")
 
 # ── PREDICTION ────────────────────────────────────────────────────────────────
 if predict_clicked:
-    payload = {
-        "Gender":                  GENDER_MAP[gender],
-        "Occupation":              OCC_MAP[occupation],
-        "self_employed":           YESNO[self_employed],
-        "family_history":          YESNO[family_history],
-        "Days_Indoors":            DAYS_MAP[days_indoors],
-        "Growing_Stress":          YESNO_MAYBE[growing_stress],
-        "Changes_Habits":          YESNO_MAYBE[changes_habits],
-        "Mental_Health_History":   YESNO_MAYBE[mh_history],
-        "Mood_Swings":             MOOD_MAP[mood_swings],
-        "Coping_Struggles":        YESNO[coping_struggles],
-        "Work_Interest":           YESNO_MAYBE[work_interest],
-        "Social_Weakness":         YESNO_MAYBE[social_weakness],
-        "mental_health_interview": YESNO_MAYBE[mh_interview],
-        "care_options":            CARE_MAP[care_options],
-    }
-
     with st.spinner("Analysing your responses…"):
         try:
-            resp       = requests.post(API_URL, json=payload, timeout=REQUEST_TIMEOUT)
-            resp.raise_for_status()
-            data       = resp.json()
-            prediction = data.get("prediction", "Unknown")
-            confidence = data.get("confidence", None)
-            explanation= data.get("explanation", "")
-            conf_pct   = round(confidence * 100, 1) if confidence else 0
+            model = load_model()
+
+            r = {
+                "Gender":                  GENDER_MAP[gender],
+                "Occupation":              OCC_MAP[occupation],
+                "self_employed":           YESNO[self_employed],
+                "family_history":          YESNO[family_history],
+                "Days_Indoors":            DAYS_MAP[days_indoors],
+                "Growing_Stress":          YESNO_MAYBE[growing_stress],
+                "Changes_Habits":          YESNO_MAYBE[changes_habits],
+                "Mental_Health_History":   YESNO_MAYBE[mh_history],
+                "Mood_Swings":             MOOD_MAP[mood_swings],
+                "Coping_Struggles":        YESNO[coping_struggles],
+                "Work_Interest":           YESNO_MAYBE[work_interest],
+                "Social_Weakness":         YESNO_MAYBE[social_weakness],
+                "mental_health_interview": YESNO_MAYBE[mh_interview],
+                "care_options":            CARE_MAP[care_options],
+            }
+
+            # ── Feature engineering (same as training notebook) ──────────
+            stress_score     = r["Growing_Stress"] + r["Mood_Swings"] + r["Coping_Struggles"]
+            behavioral_score = r["Changes_Habits"] + r["Work_Interest"] + r["Social_Weakness"] + r["Days_Indoors"]
+            awareness_score  = r["Mental_Health_History"] + r["mental_health_interview"] + r["care_options"]
+
+            stress_x_family    = stress_score    * r["family_history"]
+            care_x_family      = r["care_options"] * r["family_history"]
+            awareness_x_family = awareness_score  * r["family_history"]
+            gender_x_stress    = r["Gender"]      * stress_score
+
+            high_risk_flag = int(
+                stress_score     >= 3 and
+                behavioral_score >= 4 and
+                r["family_history"] == 1
+            )
+
+            features = np.array([[
+                r["Gender"], r["Occupation"], r["self_employed"], r["family_history"],
+                r["Days_Indoors"], r["Growing_Stress"], r["Changes_Habits"],
+                r["Mental_Health_History"], r["Mood_Swings"], r["Coping_Struggles"],
+                r["Work_Interest"], r["Social_Weakness"], r["mental_health_interview"],
+                r["care_options"],
+                stress_score, behavioral_score, awareness_score,
+                stress_x_family, care_x_family, awareness_x_family,
+                gender_x_stress, high_risk_flag,
+            ]])
+
+            prediction = model.predict(features)[0]
+            proba      = model.predict_proba(features)[0]
+            confidence = float(max(proba))
+            conf_pct   = round(confidence * 100, 1)
             conf_str   = f"{conf_pct}%"
             bar_w      = max(conf_pct, 5)
-            is_bad     = str(prediction).strip().lower() in {"yes","1","true","treatment recommended"}
+            is_bad     = int(prediction) == 1
+
+            explanation = (
+                "Based on your answers, seeking professional mental health support is recommended."
+                if is_bad
+                else "Your responses suggest a lower risk profile right now. Stay mindful!"
+            )
 
             if is_bad:
                 st.markdown(f"""
@@ -869,7 +862,7 @@ if predict_clicked:
                     <div class="result-status">Assessment Complete</div>
                     <div class="result-h2">Support Recommended</div>
                     <div class="result-conf">Confidence · {conf_str}</div>
-                    <p class="result-desc">{explanation or "Your pattern suggests professional mental health support would be beneficial right now."}</p>
+                    <p class="result-desc">{explanation}</p>
                     <div class="bar-wrap">
                       <div class="bar-labels"><span>Confidence</span><span>{conf_str}</span></div>
                       <div class="bar-track"><div class="bar-fill" style="width:{bar_w}%"></div></div>
@@ -885,7 +878,7 @@ if predict_clicked:
                     <div class="result-status">Assessment Complete</div>
                     <div class="result-h2">Positive Mental State</div>
                     <div class="result-conf">Confidence · {conf_str}</div>
-                    <p class="result-desc">{explanation or "Your responses indicate a relatively healthy mental state. Keep prioritising self-care."}</p>
+                    <p class="result-desc">{explanation}</p>
                     <div class="bar-wrap">
                       <div class="bar-labels"><span>Confidence</span><span>{conf_str}</span></div>
                       <div class="bar-track"><div class="bar-fill" style="width:{bar_w}%"></div></div>
@@ -903,24 +896,13 @@ if predict_clicked:
             </div>
             """, unsafe_allow_html=True)
 
-        except requests.exceptions.Timeout:
-            st.error("⏱️ Railway is waking up — please retry in 15 s.")
-        except requests.exceptions.ConnectionError:
-            st.error("🌐 Cannot reach API. Check Streamlit secrets → API_URL.")
-        except requests.exceptions.HTTPError:
-            try: detail = resp.json()
-            except: detail = resp.text
-            st.error(f"❌ API {resp.status_code}: {detail}")
         except Exception as e:
-            st.error(f"❌ Unexpected error: {e}")
+            st.error(f"❌ Prediction error: {e}")
 
 # ── FOOTER ────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="footer">
-    MindVault &nbsp;·&nbsp; Powered by Railway + Streamlit &nbsp;·&nbsp; Not for Clinical Use
+    MindVault &nbsp;·&nbsp; Powered by Streamlit &nbsp;·&nbsp; Not for Clinical Use
 </div>
 </div>
 """, unsafe_allow_html=True)
-
-with st.expander("🔧 Debug"):
-    st.code(f"API_URL = {API_URL}", language="text")
